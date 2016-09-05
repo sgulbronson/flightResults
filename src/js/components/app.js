@@ -1,0 +1,17 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class App extends React.Component {
+	constructor(){
+		super();
+		this.update.bind(this);
+	}
+	update(){
+		this.setState({val: this.state.val + 1})
+	}
+	render(){
+		return <div>Flight Results!</div>
+	}
+}
+
+export default App
