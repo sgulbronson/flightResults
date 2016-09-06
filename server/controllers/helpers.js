@@ -93,7 +93,7 @@ var formatFlights = module.exports = {
 
     var tripsList = {}
     // Setup object to be returned
-    var tripsMapped = {};
+    var tripsMapped = [];
 
     var count = 0;
     var returnCount = 0;
@@ -128,6 +128,7 @@ var formatFlights = module.exports = {
         returnCount++;
       } 
     })
+
     return tripsMapped;
   },
 
