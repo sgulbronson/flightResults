@@ -57,11 +57,12 @@ var formatFlights = module.exports = {
     return resArray;
   },
 
-  formatTrip: function(tripOption, tripType, dict) {
+  formatTrip: function(tripOption, tripType, id, dict) {
     var passengers = formatFlights.createPassengerObj(tripOption.pricing);
     var total = formatFlights.calcPricePerSeat(passengers, parseFloat(tripOption.saleTotal.substring(3)));
     
     var newTrip = {
+      id: id,
       pricePerSeat: total,
       ItineraryId: tripOption.id,
       indSaleFareTotal: tripOption.pricing[0].saleFareTotal,
@@ -90,9 +91,12 @@ var formatFlights = module.exports = {
       city: formatFlights.createHashObj(data.city)
     }
 
+    var tripsList = {}
     // Setup object to be returned
     var tripsMapped = {};
 
+    var count = 0;
+    var returnCount = 0;
     // Map all trip options to tripsMapped 
     trips.map(function(trip) {
       // note: slice is a property in the return object
@@ -108,15 +112,20 @@ var formatFlights = module.exports = {
         }, "");
 
       // format trips with outbound and corresponding inbound flights listed
-      if (tripsMapped[segment] === undefined) {
-        tripsMapped[segment] = { outbound: formatFlights.formatTrip(trip, "outbound", dict) }
+      if (tripsList[segment] === undefined) {
+        tripsList[segment] = count;
+        tripsMapped[count] = { id: count, segmentId: segment, outbound: formatFlights.formatTrip(trip, "outbound", count, dict) }
+        count++;
       }
       if (isRoundTrip){
-        if(!tripsMapped[segment].inbound){
-          tripsMapped[segment].inbound = [formatFlights.formatTrip(trip, "inbound", dict)]
+        if(!tripsMapped[tripsList[segment]].inbound){
+          tripsMapped[tripsList[segment]].inbound = [formatFlights.formatTrip(trip, "inbound", returnCount, dict)]
+
         } else {
-          tripsMapped[segment].inbound.push(formatFlights.formatTrip(trip, "inbound", dict))
+          id = tripsMapped[tripsList[segment]].inbound.length;
+          tripsMapped[tripsList[segment]].inbound.push(formatFlights.formatTrip(trip, "inbound", returnCount, dict))
         }
+        returnCount++;
       } 
     })
     return tripsMapped;
