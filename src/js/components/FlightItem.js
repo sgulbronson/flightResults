@@ -2,6 +2,6 @@ import React, { Component } from 'react';
 
 export class FlightItem extends Component {
   render() {
-    return (<div></div>);
+    return (<div><span></span></div>);
   }
 }
